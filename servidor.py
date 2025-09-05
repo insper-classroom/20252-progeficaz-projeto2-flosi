@@ -27,3 +27,60 @@ def connect_db():
     except Error as err:
         print(f"Erro: {err}")
         return None
+    
+
+@app.route("/imoveis", methods=['GET'])
+def get_imoveis():
+    conn = connect_db()
+
+    if conn is None:
+        resp = {"erro": "Erro ao conectar ao banco de dados"}
+        return resp, 500
+    
+    cursor = conn.cursor()
+
+    sql = "SELECT * FROM imoveis"
+    cursor.execute(sql)
+
+    results = cursor.fetchall()
+    if not results:
+        resp = {"erro": "Nenhum aluno encontrado"}
+        return resp, 404
+    else: 
+        imoveis = []
+        for imovel in results:
+            imovel_dict = {
+                "id": imovel[0],
+                "logradouro": imovel[1],
+                "tipo_logradouro": imovel[2],
+                "bairro": imovel[3],
+                "cidade": imovel[4],
+                "cep": imovel[5],
+                "tipo": imovel[6],
+                "valor": imovel[7],
+                "data_aquisicao": imovel[8],
+            }
+            imoveis.append(imovel_dict)
+        
+        resp = {"imoveis": imoveis}
+        return resp, 200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
