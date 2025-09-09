@@ -35,4 +35,25 @@ def test_get_imoveis(mock_connect_db, client):
 
     assert response.get_json() == expected_response
 
+@patch("servidor.connect_db")
+def test_get_imovel(mock_connect_db, client):
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
 
+    mock_cursor.fetchone.return_value = [
+        (1, "Ronaldo", "Rua", "Moema", "Sao Paulo", 12345, "apartamento", 10000.42, "2014-11-23")
+    ]
+
+    mock_connect_db.return_value = mock_conn
+    response = client.get("/imovel/1")
+
+    assert response.status_code == 200
+
+    expected_response = {
+        "imoveis": [
+            {"id":1,"logradouro":"Ronaldo", "tipo_logradouro":"Rua", "bairro": "Moema", "cidade":"Sao Paulo", "cep":12345, "tipo":"apartamento", "valor":10000.42, "data_aquisicao":"2014-11-23"}
+        ]
+    }
+
+    assert response.get_json() == expected_response

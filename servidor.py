@@ -82,5 +82,7 @@ def get_imoveis():
 
 
 
+
+
 if __name__ == '__main__':
     app.run(debug=True)
