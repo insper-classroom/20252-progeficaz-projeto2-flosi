@@ -44,7 +44,7 @@ def get_imoveis():
 
     results = cursor.fetchall()
     if not results:
-        resp = {"erro": "Nenhum aluno encontrado"}
+        resp = {"erro": "Nenhum imovel encontrado"}
         return resp, 404
     else: 
         imoveis = []
@@ -66,6 +66,39 @@ def get_imoveis():
         return resp, 200
 
 
+@app.route("/imovel/<int:id>", methods=["GET"])
+def get_imovel(id):
+    conn = connect_db()
+
+    if conn is None:
+        resp = {"erro": "Erro ao conectar ao banco de dados"}
+        return resp, 500
+    
+    cursor = conn.cursor()
+    sql = "SELECT * FROM imoveis WHERE id = %s" 
+    cursor.execute(sql, (id,))
+    imovel = cursor.fetchone()
+
+    if not imovel:
+        resp = {"erro": "Nenhum imovel encontrado"}
+        return resp, 404
+    else:
+        resp = {
+            "imoveis": [
+                {
+                    "id": imovel[0],
+                    "logradouro": imovel[1],
+                    "tipo_logradouro": imovel[2],
+                    "bairro": imovel[3],
+                    "cidade": imovel[4],
+                    "cep": imovel[5],
+                    "tipo": imovel[6],
+                    "valor": imovel[7],
+                    "data_aquisicao": imovel[8],
+                }
+            ]
+        }
+        return resp, 200
 
 
 

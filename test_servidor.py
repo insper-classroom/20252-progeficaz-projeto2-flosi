@@ -41,9 +41,9 @@ def test_get_imovel(mock_connect_db, client):
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
 
-    mock_cursor.fetchone.return_value = [
-        (1, "Ronaldo", "Rua", "Moema", "Sao Paulo", 12345, "apartamento", 10000.42, "2014-11-23")
-    ]
+    mock_cursor.fetchone.return_value = (1, "Ronaldo", "Rua", "Moema", "Sao Paulo", 12345, "apartamento", 10000.42, "2014-11-23")
+       
+
 
     mock_connect_db.return_value = mock_conn
     response = client.get("/imovel/1")
