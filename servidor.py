@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import os
 import mysql.connector
 from mysql.connector import Error
@@ -66,7 +66,7 @@ def get_imoveis():
         return resp, 200
 
 
-@app.route("/imovel/<int:id>", methods=["GET"])
+@app.route("/imoveis/<int:id>", methods=["GET"])
 def get_imovel(id):
     conn = connect_db()
 
@@ -75,9 +75,12 @@ def get_imovel(id):
         return resp, 500
     
     cursor = conn.cursor()
+
     sql = "SELECT * FROM imoveis WHERE id = %s" 
     cursor.execute(sql, (id,))
+
     imovel = cursor.fetchone()
+    
 
     if not imovel:
         resp = {"erro": "Nenhum imovel encontrado"}
@@ -100,6 +103,33 @@ def get_imovel(id):
         }
         return resp, 200
 
+@app.route("/imoveis", methods=["POST"])
+def add_imovel():
+    conn = connect_db()
+
+    if conn is None:
+        resp = {"erro": "Erro ao conectar ao banco de dados"}
+        return resp, 500
+    
+    data = request.get_json()
+
+    cursor = conn.cursor()
+
+    sql = "INSERT INTO imoveis (logradouro, tipo_logradouro, bairro, cidade, cep, tipo, valor, data_aquisicao) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+
+    cursor.execute(sql, (
+        data["logradouro"],
+        data["tipo_logradouro"],
+        data["bairro"],
+        data["cidade"],
+        data["cep"],
+        data["tipo"],
+        data["valor"],
+        data["data_aquisicao"]
+    ))
+
+    conn.commit()
+    return jsonify({"mensagem": "imovel criado com sucesso"}), 200
 
 
 

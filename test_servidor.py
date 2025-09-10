@@ -46,7 +46,7 @@ def test_get_imovel(mock_connect_db, client):
 
 
     mock_connect_db.return_value = mock_conn
-    response = client.get("/imovel/1")
+    response = client.get("/imoveis/1")
 
     assert response.status_code == 200
 
@@ -66,6 +66,8 @@ def test_add_imovel(mock_connect_db, client):
     mock_conn.cursor.return_value = mock_cursor
 
     mock_connect_db.return_value = mock_conn
+
+    
 
     response = client.post("/imoveis", json= {
         "logradouro": "Jose",
