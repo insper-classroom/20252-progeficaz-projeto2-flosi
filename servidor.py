@@ -133,7 +133,34 @@ def add_imovel():
 
 
 
+@app.route("/imoveis/<int:id>", methods=["PUT"])
+def update_imovel(id):
 
+    conn = connect_db()
+
+    if conn is None:
+        resp = {"erro": "Erro ao conectar ao banco de dados"}
+        return resp, 500
+
+    cursor = conn.cursor()
+    data = request.get_json()
+
+    sql = "UPDATE imoveis SET logradouro = %s, tipo_logradouro = %s, bairro = %s, cidade = %s, cep = %s, tipo = %s, valor = %s, data_aquisicao = %s WHERE id = %s"
+
+    cursor.execute(sql,(data["logradouro"],
+                        data["tipo_logradouro"],
+                        data["bairro"],
+                        data["cidade"],
+                        data["cep"],
+                        data["tipo"],
+                        data["valor"],
+                        data["data_aquisicao"],
+                        id
+))
+    
+    conn.commit()
+
+    return jsonify({"mensagem": "imovel atualizado com sucesso"}), 201
 
 
 
