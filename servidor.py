@@ -181,6 +181,44 @@ def delete_imovel(id):
 
     return resp, 200
 
+@app.route('/imoveis/tipo/<string:tipo>', methods=['GET'])
+def get_imovel_by_type(tipo):
+    conn = connect_db()
+
+    if conn is None:
+        resp = {"erro": "Erro ao conectar ao banco de dados"}
+        return resp, 500
+    
+    cursor = conn.cursor()
+
+    sql = "SELECT * FROM imoveis WHERE tipo = %s"
+    cursor.execute(sql, (tipo,))
+
+    results = cursor.fetchall()
+
+    if not results:
+        resp = {"erro": "Nenhum imovel desse tipo encontrado"}
+        return resp, 404
+    else:
+        imoveis = []
+        for imovel in results:
+            imovel_dict = {
+                "id": imovel[0],
+                "logradouro": imovel[1],
+                "tipo_logradouro": imovel[2],
+                "bairro": imovel[3],
+                "cidade": imovel[4],
+                "cep": imovel[5],
+                "tipo": imovel[6],
+                "valor": imovel[7],
+                "data_aquisicao": imovel[8],
+            }
+            imoveis.append(imovel_dict)
+
+        resp = {"imoveis": imoveis}
+        return resp, 200
+        
+
 
 
 

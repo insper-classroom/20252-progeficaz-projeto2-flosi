@@ -151,9 +151,9 @@ def test_get_imovel_by_type(mock_connect_db, client):
     expected_response = {
         "imoveis": [
             {"id": 1, "logradouro": "Ronaldo", "tipo_logradouro": "Rua", "bairro": "Moema",
-             "cidade": "São Paulo", "cep": 12345, "tipo": "apartamento", "valor": 10000.42,
-             "data_aquisicao": "2014-11-23"}
+            "cidade": "São Paulo", "cep": 12345, "tipo": "apartamento", "valor": 10000.42,
+            "data_aquisicao": "2014-11-23"}
             ]
         }
-    
+        
     assert response.get_json()== expected_response
