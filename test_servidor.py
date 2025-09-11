@@ -127,3 +127,33 @@ def test_delete_imovel(mock_connect_db, client):
 
     assert response.status_code == 200
     assert response.get_json() == {"mensagem": "imovel deletado com sucesso"}
+
+
+@patch("servidor.connect_db")
+def test_get_imovel_by_type(mock_connect_db, client):
+
+    mock_conn = MagicMock()
+
+    mock_cursor = MagicMock()
+
+    mock_conn.cursor.return_value = mock_cursor
+
+    mock_connect_db.return_value = mock_conn
+
+    mock_cursor.fetchall.return_value = [
+    (1, "Ronaldo", "Rua", "Moema", "São Paulo", 12345, "apartamento", 10000.42, "2014-11-23")
+    ]
+
+    response = client.get("/imoveis/tipo/apartamento")
+
+    assert response.status_code == 200
+
+    expected_response = {
+        "imoveis": [
+            {"id": 1, "logradouro": "Ronaldo", "tipo_logradouro": "Rua", "bairro": "Moema",
+             "cidade": "São Paulo", "cep": 12345, "tipo": "apartamento", "valor": 10000.42,
+             "data_aquisicao": "2014-11-23"}
+            ]
+        }
+    
+    assert response.get_json()== expected_response
