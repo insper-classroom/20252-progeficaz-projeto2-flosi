@@ -217,6 +217,48 @@ def get_imovel_by_type(tipo):
 
         resp = {"imoveis": imoveis}
         return resp, 200
+
+
+@app.route('/imoveis/cidade/<string:cidade>', methods=['GET'])
+def get_imovel_by_city(cidade):
+    conn = connect_db()
+
+    if conn is None:
+        resp = {"erro": "Erro ao conectar ao banco de dados"}
+        return resp, 500
+
+    cursor = conn.cursor()
+
+    sql = 'SELECT * FROM imoveis WHERE cidade = %s'
+    cursor.execute(sql, (cidade,))
+
+    results = cursor.fetchall()
+
+    if not results:
+        resp = {"erro": "Nenhum imovel com essa cidade encontrada"}
+        return resp, 404
+    else:
+        imoveis = []
+        for imovel in results:
+            imovel_dict = {
+                "id": imovel[0],
+                "logradouro": imovel[1],
+                "tipo_logradouro": imovel[2],
+                "bairro": imovel[3],
+                "cidade": imovel[4],
+                "cep": imovel[5],
+                "tipo": imovel[6],
+                "valor": imovel[7],
+                "data_aquisicao": imovel[8],
+            }
+            imoveis.append(imovel_dict)
+
+        resp = {"imoveis": imoveis}
+        return resp, 200
+
+
+
+
         
 
 
