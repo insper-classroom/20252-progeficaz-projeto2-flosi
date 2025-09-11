@@ -108,3 +108,22 @@ def test_update_imovel(mock_connect_db, client):
     
     assert response.status_code == 201
     assert response.get_json() == {"mensagem": "imovel atualizado com sucesso"}
+
+
+@patch("servidor.connect_db")
+def test_delete_imovel(mock_connect_db, client):
+
+    mock_conn = MagicMock()
+
+    mock_cursor = MagicMock()
+
+    mock_conn.cursor.return_value = mock_cursor
+
+    mock_connect_db.return_value = mock_conn
+
+    mock_cursor.rowcount = 1 
+
+    response = client.delete("/imoveis/delete/1")
+
+    assert response.status_code == 200
+    assert response.get_json() == {"mensagem": "imovel deletado com sucesso"}
