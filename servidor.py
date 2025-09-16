@@ -59,6 +59,14 @@ def get_imoveis():
                 "tipo": imovel[6],
                 "valor": imovel[7],
                 "data_aquisicao": imovel[8],
+                'rotas': {
+                    'get imovel': f"/imoveis/{imovel[0]}",
+                    'add imovel': "/imoveis",
+                    'update imovel': f"/imoveis/{imovel[0]}",
+                    'delete imovel': f"/imoveis/delete/{imovel[0]}",
+                    'get imovel by type': f"/imoveis/tipo/{imovel[6]}",
+                    'get imovel by city': f"/imoveis/cidade/{imovel[4]}"
+                }
             }
             imoveis.append(imovel_dict)
         
@@ -98,6 +106,14 @@ def get_imovel(id):
                     "tipo": imovel[6],
                     "valor": imovel[7],
                     "data_aquisicao": imovel[8],
+                    'rotas': {
+                        'get imoveis': f"/imoveis",
+                        'add imovel': f"/imoveis",
+                        'update imovel': f"/imoveis/{imovel[0]}",
+                        'delete imovel': f"/imoveis/delete/{imovel[0]}",
+                        'get imovel by type': f"/imoveis/tipo/{imovel[6]}",
+                        'get imovel by city': f"/imoveis/cidade/{imovel[4]}"
+                }
                 }
             ]
         }
@@ -128,8 +144,27 @@ def add_imovel():
         data["data_aquisicao"]
     ))
 
+    catch_id = cursor.lastrowid
+    sql = "SELECT * FROM imoveis WHERE id = %s" 
+    cursor.execute(sql, (catch_id,))
+    imovel = cursor.fetchone()
+
+    
+    
+    
+
     conn.commit()
-    return jsonify({"mensagem": "imovel criado com sucesso"}), 200
+    return jsonify({"mensagem": "imovel criado com sucesso",
+                    'rotas': {
+                        'id': f'{catch_id}',
+                        'get imoveis': "/imoveis",
+                        'get imovel': f"/imoveis/{imovel[0]}",
+                        'update imovel': f"/imoveis/{imovel[0]}",
+                        'delete imovel': f"/imoveis/delete/{imovel[0]}",
+                        'get imovel by type': f"/imoveis/tipo/{imovel[6]}",
+                        'get imovel by city': f"/imoveis/cidade/{imovel[4]}"
+                }
+                    }), 201
 
 
 
@@ -158,9 +193,25 @@ def update_imovel(id):
                         id
 ))
     
+
+    sql = "SELECT * FROM imoveis WHERE id = %s" 
+    cursor.execute(sql, (id,))
+    imovel = cursor.fetchone()
+
+
     conn.commit()
 
-    return jsonify({"mensagem": "imovel atualizado com sucesso"}), 201
+    return jsonify({"mensagem": "imovel atualizado com sucesso",
+                    'rotas': {
+                        'id': id,
+                        'get imoveis': "/imoveis",
+                        'get imovel': f"/imoveis/{imovel[0]}",
+                        'add imovel': f"/imoveis",
+                        'delete imovel': f"/imoveis/delete/{imovel[0]}",
+                        'get imovel by type': f"/imoveis/tipo/{imovel[6]}",
+                        'get imovel by city': f"/imoveis/cidade/{imovel[4]}"
+                }
+                    }), 200
 
 @app.route('/imoveis/delete/<int:id>', methods=['DELETE'])
 def delete_imovel(id):
@@ -172,12 +223,28 @@ def delete_imovel(id):
     
     cursor = conn.cursor()
 
+    sql = "SELECT * FROM imoveis WHERE id = %s" 
+    cursor.execute(sql, (id,))
+    imovel = cursor.fetchone()
+
     sql = "DELETE FROM imoveis WHERE id =%s"
     cursor.execute(sql,(id,))
 
+    
+    
+
     conn.commit()
 
-    resp = {"mensagem": "imovel deletado com sucesso"}
+    resp = {"mensagem": "imovel deletado com sucesso",
+            'rotas': {
+                    'id': id,
+                    'get imoveis': "/imoveis",
+                    'get imovel': f"/imoveis/{imovel[0]}",
+                    'add imovel': f"/imoveis",
+                    'update imovel': f"/imoveis/{imovel[0]}",
+                    'get imovel by type': f"/imoveis/tipo/{imovel[6]}",
+                    'get imovel by city': f"/imoveis/cidade/{imovel[4]}"
+                }}
 
     return resp, 200
 
@@ -212,6 +279,14 @@ def get_imovel_by_type(tipo):
                 "tipo": imovel[6],
                 "valor": imovel[7],
                 "data_aquisicao": imovel[8],
+                'rotas': {
+                    'get imoveis': "/imoveis",
+                    'get imovel': f"/imoveis/{imovel[0]}",
+                    'add imovel': f"/imoveis",
+                    'update imovel': f"/imoveis/{imovel[0]}",
+                    'delete imovel': f"/imoveis/delete/{imovel[0]}",
+                    'get imovel by city': f"/imoveis/cidade/{imovel[4]}"
+                }
             }
             imoveis.append(imovel_dict)
 
@@ -250,6 +325,14 @@ def get_imovel_by_city(cidade):
                 "tipo": imovel[6],
                 "valor": imovel[7],
                 "data_aquisicao": imovel[8],
+                'rotas': {
+                    'get imoveis': "/imoveis",
+                    'get imovel': f"/imoveis/{imovel[0]}",
+                    'add imovel': f"/imoveis",
+                    'update imovel': f"/imoveis/{imovel[0]}",
+                    'delete imovel': f"/imoveis/delete/{imovel[0]}",
+                    'get imovel by type': f"/imoveis/tipo/{imovel[6]}",
+                }
             }
             imoveis.append(imovel_dict)
 
